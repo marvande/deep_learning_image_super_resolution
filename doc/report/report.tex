@@ -5,7 +5,7 @@
 
 
 \begin{document}
-\title{Title to complete... super resolution on medical images}
+\title{Super resolution on medical images}
 \author{
   Author: Marijn van der Meer\\
   Professor: Pascal Frossard, Supervisor: Mireille El Gheche \\
@@ -29,20 +29,27 @@ the paper. The four points that should be covered:
  \end{abstract}
 
 \section{Introduction}\label{sec:introduction}
-\textbf{Describe your problem and state your
-  contributions.}
-  Example of citation~\cite{jones08}
-and references to another section~\ref{sec:introduction}. Example of figure and reference to Figure~\ref{fig:denoise-fourier} \begin{figure}[tbp]
+
+In \textit{"Spatial computation of intratumoral T cells correlates with survival of patients with pancreatic cancer"}~\cite{Carstens2017}, Carstens, J. L. et al. correlate spatial placement of intra-tumoral T cells with survival of patients with pancreatic cancer. For this nevertheless, one needs a good evaluation of composition and distribution of elements active in fibrous and connective tissue growth and immune cells in tumor stroma. In this light, having at our disposition melanoma scans provided by the CHUV (see Figure~\ref{fig:melanoma-scan}), our project aims perform super resolution on them under the assumption that high-resolution snapshots of the tissue and its corresponding phenotypes are available in order to estimate cell populations. As mentioned above, our data is comprised of melanoma scans and their inForm output data provided by the CHUV. Due to time and technology constraints, whole slide images created by the scanner are of low-resolution. This leads to loss of a lot of important details. Therefore, the resolution is improved for certain predefined locations, by zooming in manually. These high-resolution snapshots come with additional information, namely their phenotypes provided by inForm, an analysis software. Nevertheless, as the number of high-resolution scans are limited, considering only them might lead to loss of important information regarding the whole slide. Thus, the goal of this project is to develop a model that is able to produce high resolution images of the whole melanoma scan by taking into
+account the high resolution snapshots and the underlying image structure.
+
+
+ \begin{figure}[tbp]
   \centering
-  \includegraphics[width=\columnwidth]{denoised_signal_1d}
-  \caption{Signal compression and denoising using the Fourier basis.}
+  \includegraphics[width=\columnwidth]{doc/report/images/scan1.jpg}
+  \caption{Example of a low resolution medical image with six high-resolution
+snapshots. Middle: low-resolution of the whole slide with 45 snapshot positions
+(small boxes). Left and Right: example of six high-resolution snapshots.}
   \vspace{-3mm}
-  \label{fig:denoise-fourier}
+  \label{fig:melanoma-scan}
 \end{figure}
+
 
 \section{State of the art}\label{sec:state-of-art}
 \textbf{Survey the related work, giving credit where credit is
-  due.}
+  due.} In the literature, several models have been proposed to perform super-resolution on medical images. We will survey them to get an idea what has already been done, from what we will take inspiration and what we decided to change. In ~\cite{zhang2019}, Zhang et al. propose a fast medical image super-resolution (FMISR) method with three hidden layers in addition to a sub-pixel convolution layer and a mini-network. This  model, they stipulate, improves image reconstruction speed and quality. Nevetheless, as it is used and trained on retinal macula, brain and bone images, it is not ideal for our stroma images, which are more cell oriented (\textbf{other way to formulate ?}). In ~\cite{nature2019}, Hongda Wang et al. present a deep-learning-enabled super-resolution across different fluorescence microscopy modalities. Their model is based on training a generative adversarial network (GAN) to create super resolution total internal reflection fluorescence (TIRF) microscopy images of sub-cellular structures from diffraction-limited input images. Nevertheless, we choose not to follow a GAN structure because of \textbf{TO COMPLETE}. In ~\cite{Janowczyk2018}, Janowczyk et al. introduce a resolution adaptive deep hierarchical (RADHicaL) learning scheme applied to nuclear segmentation of digital pathology images. In their model, "deep learning networks at lower resolutions are leveraged to determine if higher levels of magnification, and thus computation, are necessary to provide precise results"~\cite{Janowczyk2018}. While the images that are the focus of their report are much more similar to ours than the other state of the art methods, \textbf{TO complete why we don't want that}. 
+  
+  
 
 \section{Models and Methods}\label{sec:models-methods}
 \textbf{ Describe your idea and how it was implemented to solve
