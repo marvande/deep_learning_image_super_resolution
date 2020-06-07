@@ -4,7 +4,7 @@
 Input images:
 | Model  |  LR |  MR |  HR | # train images | # val images | Normalization | 
 |---|---|---|---|---|---|---|
-| Orginal  (PETS)|   (3,96,128) |   (3, 256, 342) |   ? |  ? | Imagenet stats |
+| Orginal  (PETS)|   (3,96,128) |   (3, 256, 342) |   ? |  ? | ? |Imagenet stats
 | Simulation 1  (MRI)| (3,96,128) |   (3, 256, 342) | (3, 1004, 1344) |   427 | 47| Imagenet stats |
 | Simulation 2 (MRI)| (3, 500, 669)|  (3, 1004, 1344)  | (3, 1004, 1344)  |  1388 | 154|Imagenet stats |
 | Simulation 3 (MRI) (cut in 4)| (3, 250, 334)| (3, 502, 672)  |  (3, 502, 672)  |  5552 | 616 |Imagenet stats |
