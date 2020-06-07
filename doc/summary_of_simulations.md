@@ -2,13 +2,15 @@
 
 ## Original model:
 Input images:
-| Model  |  LR |  MR |  HR | # train images | # val images |
-|---|---|---|---|---|---|
-| Orginal  (PETS)|   (3,96,128) |   (3, 256, 342) |   ? |  ? |
-| Simulation 1  (MRI)| (3,96,128) |   (3, 256, 342) | (3, 1004, 1344) |   427 | 47| 
-| Simulation 2 (MRI)| (3, 500, 669)|  (3, 1004, 1344)  | (3, 1004, 1344)  |  1388 | 154|
-| Simulation 3 (MRI) (cut in 4)| (3, 250, 334)| (3, 502, 672)  |  (3, 502, 672)  |  5552 | 616 |
-| Simulation 4 (MRI) (cut in 4)| (3, 250, 334)| (3, 502, 672)  |  (3, 502, 672)  |  5552 | 616 |
+| Model  |  LR |  MR |  HR | # train images | # val images | Normalization | 
+|---|---|---|---|---|---|---|
+| Orginal  (PETS)|   (3,96,128) |   (3, 256, 342) |   ? |  ? | Imagenet stats |
+| Simulation 1  (MRI)| (3,96,128) |   (3, 256, 342) | (3, 1004, 1344) |   427 | 47| Imagenet stats |
+| Simulation 2 (MRI)| (3, 500, 669)|  (3, 1004, 1344)  | (3, 1004, 1344)  |  1388 | 154|Imagenet stats |
+| Simulation 3 (MRI) (cut in 4)| (3, 250, 334)| (3, 502, 672)  |  (3, 502, 672)  |  5552 | 616 |Imagenet stats |
+| Simulation 4 (MRI) (cut in 4)| (3, 250, 334)| (3, 502, 672)  |  (3, 502, 672)  |  5552 | 616 |Imagenet stats |
+| Simulation 5 (MRI) (cut in 4)| (3, 250, 334)| (3, 502, 672)  |  (3, 502, 672)  |  5552 | 616 |Image stats|
+| Simulation 6 (MRI) (cut4, tiff)| (3, 250, 334)| (3, 502, 672)  |  (3, 502, 672)  |  1851 | 205 |Image stats|
 
 ### Training: 
 - architecture = unet_learner
@@ -24,6 +26,8 @@ Input images:
 | Simulation 2 |  (3, 500, 500) |   (3, 500, 500)|4 | 10 | 1e-3 | slice(0.01)| 0.5513 |	0.5490 |
 | Simulation 3 (cut in 4)|  (3, 250, 250)|  (3, 250, 250)|20 | 10 | 1e-3 | slice(0.01)| 0.6505 |0.6240 
 | Simulation 4 (cut in 4)|  (3, 250, 334)|  (3, 250, 334)|15 | 10 | 1e-3 | slice(0.01)| 0.605637 |0.587562 
+| Simulation 5 (cut in 4)|  (3, 250, 334)|  (3, 250, 334)|15 | 10 | 1e-3 | slice(0.01)| 0.6043 | 0.5753
+| Simulation 6 (cut4, tiff)|  (3, 250, 334)|  (3, 250, 334)|15 | 10 | 1e-3 | slice(0.01)| 0.449800 |0.501512
 
 
 **Phase 1b**: 
@@ -34,6 +38,8 @@ Input images:
 | Simulation 2 | (3, 500, 500) |   (3, 500, 500)|4 | 10 | 1e-3 | slice(1e-5, 1e-3) |0.5476 |	0.5245
 | Simulation 3 (cut in 4)|  (3, 250, 250)|  (3, 250, 250)|20 | 10 | 1e-3 | slice(1e-5, 1e-3)| 0.6066 |0.5747 |
 | Simulation 4 (cut in 4)|  (3, 250, 334)|  (3, 250, 334)|15 | 10 | 1e-3 | slice(1e-5, 1e-3)| 0.594584 |0.571241 |
+| Simulation 5 (cut in 4)|  (3, 250, 334)|  (3, 250, 334)|15 | 10 | 1e-3 | slice(1e-5, 1e-3)| 0.5854 |0.5634 |
+| Simulation 6 (cut4, tiff)|  (3, 250, 334)|  (3, 250, 334)|15 | 10 | 1e-3 | slice(1e-5, 1e-3)| 0.425064 |0.509859 |
 
 
 #### Phase 2:
@@ -47,6 +53,8 @@ Input images:
 | Simulation 2 |  (3, 1004, 1004) |  (3, 1004, 1004) | 1 | 10 | 1e-3 | slice(1e-3)|0.6276|	0.651
 | Simulation 3 (cut in 4)|  (3, 502, 502)|  (3, 502, 502)| 5 | 10 | 1e-3 | slice(1e-3)| 0.7236 |0.7507 |
 | Simulation 4 (cut in 4)|  (3, 502, 672)|  (3, 502, 672)| 4 | 10 | 1e-3 | slice(1e-3)|0.710625|0.746289 |
+| Simulation 5 (cut in 4)|  (3, 502, 672)|  (3, 502, 672)| 4 | 10 | 1e-3 | slice(1e-3)|0.7023|0.7366 |
+| Simulation 5 (cut4, tiff)|  (3, 502, 672)|  (3, 502, 672)| 4 | 10 | 1e-3 | slice(1e-3)|?|? |
 
 
 **Phase 2b**: 
@@ -57,6 +65,14 @@ Input images:
 | Simulation 2 | (3, 1004, 1004) |  (3, 1004, 1004) |  | 10 | 1e-3 | slice(1e-6, 1e-4)| 0.628 |	0.6488
 | Simulation 3 (cut in 4)|  (3, 502, 502)|  (3, 502, 502)| 5 | 10 | 1e-3 | slice(1e-6, 1e-4)| ? |	? |
 | Simulation 4 (cut in 4)|  (3, 502, 672)|  (3, 502, 672)| 4 | 10 | 1e-3 | slice(1e-6, 1e-4)| 0.694823 |	0.721953 |
+| Simulation 5 (cut in 4)|  (3, 502, 672)|  (3, 502, 672)| 4 | 10 | 1e-3 | slice(1e-6, 1e-4)| 0.68534 |	0.71327|
+| Simulation 6 (cut4, tiff)|  (3, 502, 672)|  (3, 502, 672)| 4 | 10 | 1e-3 | slice(1e-6, 1e-4)| ? |	?|
+
+
+Model | Average MSE | Average NMSE | Average SSIM | Average MSE LR | Average NMSE LR | Average SSIM LR| 
+|---|---|---|---|---|---|---|
+| Simulation 4 (MRI) (cut in 4)|0.000873|0.0298464|0.9134315| 0.000288 | 0.0181| 0.9720| 
+| Simulation 6 (MRI) (cut4, tiff)|?|?|?|?| ?|?| 
 
 **Feature loss**: 
 Create feature loss: 
@@ -71,5 +87,7 @@ Create feature loss:
 - feature loss = ? 
 
 
-
+### Issues: 
+- Creating training data: ideally 6 channel tiff images but had to convert to three channel images --> Several Deep Learning Framework Libraries (.e.g PyTorch's TorchVision), Image Processing libraries (.e.g skimage) and machine learning data augmentation libraries (e.g. Augmenter) internally rely on the PIL to perform image transformations. You can have a situation where in a Semantic Segmentation problem, you have a 3-ch RGB input image, but have a 10-ch mask with each individual channels containing a binary mask of the classes found in the RGB image.If you use PIL to perform any type of transform, e.g. rescale, it truncates a multi-channel image to a 3-channel image.
+- Training data very similar according to MSE, NMSE, SSIM (need to evaluate differently) 
 
