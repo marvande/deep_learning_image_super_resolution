@@ -54,7 +54,7 @@ Input images:
 | Simulation 3 (cut in 4)|  (3, 502, 502)|  (3, 502, 502)| 5 | 10 | 1e-3 | slice(1e-3)| 0.7236 |0.7507 |
 | Simulation 4 (cut in 4)|  (3, 502, 672)|  (3, 502, 672)| 4 | 10 | 1e-3 | slice(1e-3)|0.710625|0.746289 |
 | Simulation 5 (cut in 4)|  (3, 502, 672)|  (3, 502, 672)| 4 | 10 | 1e-3 | slice(1e-3)|0.7023|0.7366 |
-| Simulation 5 (cut4, tiff)|  (3, 502, 672)|  (3, 502, 672)| 4 | 10 | 1e-3 | slice(1e-3)|?|? |
+| Simulation 6 (cut4, tiff)|  (3, 502, 672)|  (3, 502, 672)| 4 | 10 | 1e-3 | slice(1e-3)|0.639402|0.847978 |
 
 
 **Phase 2b**: 
@@ -66,13 +66,18 @@ Input images:
 | Simulation 3 (cut in 4)|  (3, 502, 502)|  (3, 502, 502)| 5 | 10 | 1e-3 | slice(1e-6, 1e-4)| ? |	? |
 | Simulation 4 (cut in 4)|  (3, 502, 672)|  (3, 502, 672)| 4 | 10 | 1e-3 | slice(1e-6, 1e-4)| 0.694823 |	0.721953 |
 | Simulation 5 (cut in 4)|  (3, 502, 672)|  (3, 502, 672)| 4 | 10 | 1e-3 | slice(1e-6, 1e-4)| 0.68534 |	0.71327|
-| Simulation 6 (cut4, tiff)|  (3, 502, 672)|  (3, 502, 672)| 4 | 10 | 1e-3 | slice(1e-6, 1e-4)| ? |	?|
+| Simulation 6 (cut4, tiff)|  (3, 502, 672)|  (3, 502, 672)| 4 | 10 | 1e-3 | slice(1e-6, 1e-4)| 0.614185 |	0.792894|
 
 
 Model | Average MSE | Average NMSE | Average SSIM | Average MSE LR | Average NMSE LR | Average SSIM LR| 
 |---|---|---|---|---|---|---|
 | Simulation 4 (MRI) (cut in 4)|0.000873|0.0298464|0.9134315| 0.000288 | 0.0181| 0.9720| 
-| Simulation 6 (MRI) (cut4, tiff)|?|?|?|?| ?|?| 
+| Simulation 6 (MRI) (cut4, tiff)|0.001371|0.035364|0.884909|0.000111| 0.011021|0.992113| 
+
+Model | Median MSE | Median NMSE | Median SSIM | Median MSE LR | Median NMSE LR | Median SSIM LR| 
+|---|---|---|---|---|---|---|
+| Simulation 4 (MRI) (cut in 4)|0.000565|0.025679 | 0.939164| 0.000258 | 0.016857| 0.975474| 
+| Simulation 6 (MRI) (cut4, tiff)|0.000582|0.026722|0.940734|.000081| 0.009626|0.994210| 
 
 **Feature loss**: 
 Create feature loss: 
