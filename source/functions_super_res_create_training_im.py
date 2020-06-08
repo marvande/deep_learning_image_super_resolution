@@ -9,6 +9,8 @@ from PIL import Image
 import bioformats
 import re
 from pathlib import Path
+from numpy import asarray
+
 
 
 def correct_file(location, patient, phenotypes, file):
@@ -33,7 +35,7 @@ def correct_file(location, patient, phenotypes, file):
     else:
         return False
     
-def create_grayscale(path_hr, path_lr, file, new_size = (1004, 1344, 3), to_resize = True):
+def create_grayscale(path_hr, path_lr, file, new_size = (1004, 1344, 3), to_resize = False):
     """
     create_grayscale: Creates a one channel resized image of a phenotype output of inform
     @input: 
@@ -49,18 +51,18 @@ def create_grayscale(path_hr, path_lr, file, new_size = (1004, 1344, 3), to_resi
     #Resize HR patch to LR patch size of (500, 669):
 
     #load image:
-    hr_patch = bioformats.load_image(path_hr + file)
+    hr_patch =  plt.imread(path_hr + file)
     assert (hr_patch.shape == (1004, 1344, 3))
     
     if to_resize: 
         #resize image:
         hr_patch_resized = resize(hr_patch, new_size, anti_aliasing=True)
+        print(hr_patch_resized)
         assert (list(hr_patch_resized.shape) == list(new_size))
     else: hr_patch_resized = hr_patch
 
-    #Convert to one channel:
-    rgb_weights = [0.2989, 0.5870, 0.1140]
-    grayscale_image = np.dot(hr_patch_resized, rgb_weights)
+    grayscale_image = Image.fromarray(hr_patch_resized)
+    grayscale_image = grayscale_image.convert('L')
 
     return grayscale_image
 
@@ -86,7 +88,7 @@ def create_train_data(patients,
 
     # First delete content of directory if not empty:
     p = Path(path_lr)
-    for f in p.glob('*.tiff'):
+    for f in p.glob('*.tif'):
         try:
             f.unlink()
         except OSError as e:
@@ -114,10 +116,10 @@ def create_train_data(patients,
             s[0] = len(phenotypes)
             s[1] = int(height/2)
             s[2] = int(width/2)            
-            im1 = np.zeros(tuple(s))
-            im2 = np.zeros(tuple(s))
-            im3 = np.zeros(tuple(s))
-            im4 = np.zeros(tuple(s))
+            im1 = np.zeros(tuple(s), dtype='uint8')
+            im2 = np.zeros(tuple(s), dtype='uint8')
+            im3 = np.zeros(tuple(s), dtype='uint8')
+            im4 = np.zeros(tuple(s), dtype='uint8')
             
             for i in range(len(phenotypes)):
                 im = arr[i, :, :]
@@ -127,10 +129,14 @@ def create_train_data(patients,
                 im4[i,:,:] = im[height-int((height / 2)):height, width-int((width / 2)):width]
     
                 
-            imsave(path_lr + patient + '_' + location + '_part_1'+'_.tiff', im1)
-            imsave(path_lr + patient + '_' + location + '_part_2'+'_.tiff', im2)
-            imsave(path_lr + patient + '_' + location + '_part_3'+'_.tiff', im3)
-            imsave(path_lr + patient + '_' + location + '_part_4'+'_.tiff', im4)
+            imsave(path_lr + patient + '_' + location + '_part_1_1'+'_.tif', im1[0:3,:,:].transpose(1,2,0),dtype='uint8')
+            imsave(path_lr + patient + '_' + location + '_part_2_1'+'_.tif', im2[0:3,:,:].transpose(1,2,0),dtype='uint8')
+            imsave(path_lr + patient + '_' + location + '_part_3_1'+'_.tif', im3[0:3,:,:].transpose(1,2,0),dtype='uint8')
+            imsave(path_lr + patient + '_' + location + '_part_4_1'+'_.tif', im4[0:3,:,:].transpose(1,2,0),dtype='uint8')
+            imsave(path_lr + patient + '_' + location + '_part_1_2'+'_.tif', im1[3:,:,:].transpose(1,2,0),dtype='uint8')
+            imsave(path_lr + patient + '_' + location + '_part_2_2'+'_.tif', im2[3:,:,:].transpose(1,2,0),dtype='uint8')
+            imsave(path_lr + patient + '_' + location + '_part_3_2'+'_.tif', im3[3:,:,:].transpose(1,2,0),dtype='uint8')
+            imsave(path_lr + patient + '_' + location + '_part_4_2'+'_.tif', im4[3:,:,:].transpose(1,2,0),dtype='uint8')
 
         print('Finished patient:' + patient)
     print('Done with all patients')
@@ -174,7 +180,13 @@ def get_locations(path_hr, patient):
         locations.append('[' + str(match) + ']')
     return np.unique(np.array(locations))
 
-def multichannel_phenotype(patient, location, phenotypes, path_hr, path_lr, to_resize = True,new_size = (1004, 1344, 3)):
+def multichannel_phenotype(patient,
+                           location,
+                           phenotypes,
+                           path_hr,
+                           path_lr,
+                           to_resize=False,
+                           new_size=(1004, 1344, 3)):
     """
     multichannel_phenotype: creates a 6 channel image for a location of an HR patch
     each channel is a phenotype output of inform
@@ -188,35 +200,37 @@ def multichannel_phenotype(patient, location, phenotypes, path_hr, path_lr, to_r
     - str path_lr: path to the location of our new resized HR patch
 
     @output: (500, 669, 6) array of a HR phenotype patch
-    """    
-    
-    #Find all HR phenotype patches: 
+    """
+
+    #Find all HR phenotype patches:
     with os.scandir(path_hr) as entries:
         files = [entry.name for entry in entries if entry.is_file()]
 
     #Get all files for a patient and certain location:
     patient_loc_HR = [
-        file for file in files if correct_file(location, patient, phenotypes, file)
-    ] 
-    
+        file for file in files
+        if correct_file(location, patient, phenotypes, file)
+    ]
+
     if len(patient_loc_HR) != len(phenotypes):
         print(patient_loc_HR)
         assert False
-    
+
     #Resize the phenotype files and create one image with 6 channels(one for each phenotype):
-    
+
     #Transform the size to 6 channels:
     s = list(new_size)
     s[0] = len(patient_loc_HR)
     s[1] = new_size[0]
     s[2] = new_size[1]
-    arr = np.zeros(tuple(s))
-    
+    arr = np.zeros(tuple(s), dtype='uint8')
+
     #Create a one channel image for each phenotype and concatenate them:
     for i in range(len(patient_loc_HR)):
-        arr[i, :, :] = create_grayscale(path_hr, path_lr, patient_loc_HR[i], new_size, to_resize)
-    assert(arr.size != 0)
-    
+        im = create_grayscale(path_hr, path_lr, patient_loc_HR[i],new_size, to_resize)
+        arr[i, :, :] = asarray(im)
+    assert (arr.size != 0)
+
     return arr
 
 def show_6_chann_phen(multi_chann_array, phenotypes):
