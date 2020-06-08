@@ -11,6 +11,8 @@ Input images:
 | Simulation 4 (MRI) (cut in 4)| (3, 250, 334)| (3, 502, 672)  |  (3, 502, 672)  |  5552 | 616 |Imagenet stats |
 | Simulation 5 (MRI) (cut in 4)| (3, 250, 334)| (3, 502, 672)  |  (3, 502, 672)  |  5552 | 616 |Image stats|
 | Simulation 6 (MRI) (cut4, tiff)| (3, 250, 334)| (3, 502, 672)  |  (3, 502, 672)  |  1851 | 205 |Image stats|
+| Simulation 7 (MRI) (cut4, tiff, w/o transf)| (3, 250, 334)| (3, 502, 672)  |  (3, 502, 672)  |  1851 | 205 |Image stats|
+
 
 ### Training: 
 - architecture = unet_learner
