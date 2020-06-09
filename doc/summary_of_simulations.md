@@ -11,6 +11,8 @@ Input images:
 | Simulation 4 (MRI) (cut in 4)| (3, 250, 334)| (3, 502, 672)  |  (3, 502, 672)  |  5552 | 616 |Imagenet stats |
 | Simulation 5 (MRI) (cut in 4)| (3, 250, 334)| (3, 502, 672)  |  (3, 502, 672)  |  5552 | 616 |Image stats|
 | Simulation 6 (MRI) (cut4, tiff)| (3, 250, 334)| (3, 502, 672)  |  (3, 502, 672)  |  1851 | 205 |Image stats|
+| Simulation 7 (MRI) (cut4, tiff, w/o transf)| (3, 250, 334)| (3, 502, 672)  |  (3, 502, 672)  |  1851 | 205 |Image stats|
+
 
 ### Training: 
 - architecture = unet_learner
@@ -28,6 +30,8 @@ Input images:
 | Simulation 4 (cut in 4)|  (3, 250, 334)|  (3, 250, 334)|15 | 10 | 1e-3 | slice(0.01)| 0.605637 |0.587562 
 | Simulation 5 (cut in 4)|  (3, 250, 334)|  (3, 250, 334)|15 | 10 | 1e-3 | slice(0.01)| 0.6043 | 0.5753
 | Simulation 6 (cut4, tiff)|  (3, 250, 334)|  (3, 250, 334)|15 | 10 | 1e-3 | slice(0.01)| 0.449800 |0.501512
+| Simulation  7 (MRI) (cut4, tiff, w/o transf)|  (3, 250, 334)|  (3, 250, 334)|15 | 10 | 1e-3 | slice(0.01)| 0.351183 |0.346088
+
 
 
 **Phase 1b**: 
@@ -40,6 +44,7 @@ Input images:
 | Simulation 4 (cut in 4)|  (3, 250, 334)|  (3, 250, 334)|15 | 10 | 1e-3 | slice(1e-5, 1e-3)| 0.594584 |0.571241 |
 | Simulation 5 (cut in 4)|  (3, 250, 334)|  (3, 250, 334)|15 | 10 | 1e-3 | slice(1e-5, 1e-3)| 0.5854 |0.5634 |
 | Simulation 6 (cut4, tiff)|  (3, 250, 334)|  (3, 250, 334)|15 | 10 | 1e-3 | slice(1e-5, 1e-3)| 0.425064 |0.509859 |
+| Simulation  7 (MRI) (cut4, tiff, w/o transf)|  (3, 250, 334)|  (3, 250, 334)|15 | 10 | 1e-3 |slice(1e-5, 1e-3)| 0.341797 |0.341707 
 
 
 #### Phase 2:
@@ -55,6 +60,8 @@ Input images:
 | Simulation 4 (cut in 4)|  (3, 502, 672)|  (3, 502, 672)| 4 | 10 | 1e-3 | slice(1e-3)|0.710625|0.746289 |
 | Simulation 5 (cut in 4)|  (3, 502, 672)|  (3, 502, 672)| 4 | 10 | 1e-3 | slice(1e-3)|0.7023|0.7366 |
 | Simulation 6 (cut4, tiff)|  (3, 502, 672)|  (3, 502, 672)| 4 | 10 | 1e-3 | slice(1e-3)|0.639402|0.847978 |
+| Simulation 7 (MRI) (cut4, tiff, w/o transf)|  (3, 502, 672)|  (3, 502, 672)| 4 | 10 | 1e-3 | slice(1e-3)|0.689234|0.680575 |
+
 
 
 **Phase 2b**: 
@@ -67,17 +74,22 @@ Input images:
 | Simulation 4 (cut in 4)|  (3, 502, 672)|  (3, 502, 672)| 4 | 10 | 1e-3 | slice(1e-6, 1e-4)| 0.694823 |	0.721953 |
 | Simulation 5 (cut in 4)|  (3, 502, 672)|  (3, 502, 672)| 4 | 10 | 1e-3 | slice(1e-6, 1e-4)| 0.68534 |	0.71327|
 | Simulation 6 (cut4, tiff)|  (3, 502, 672)|  (3, 502, 672)| 4 | 10 | 1e-3 | slice(1e-6, 1e-4)| 0.614185 |	0.792894|
+| Simulation 7 (MRI) (cut4, tiff, w/o transf)|  (3, 502, 672)|  (3, 502, 672)| 4 | 10 | 1e-3 | slice(1e-6, 1e-4)| 0.676916 |	0.665724|
+
 
 
 Model | Average MSE | Average NMSE | Average SSIM | Average MSE LR | Average NMSE LR | Average SSIM LR| 
 |---|---|---|---|---|---|---|
 | Simulation 4 (MRI) (cut in 4)|0.000873|0.0298464|0.9134315| 0.000288 | 0.0181| 0.9720| 
-| Simulation 6 (MRI) (cut4, tiff)|0.001371|0.035364|0.884909|0.000111| 0.011021|0.992113| 
+| Simulation 6 (MRI) (cut4, tiff)|0.001371|0.035364|0.884909|0.000111| 0.011021|0.992113|
+| Simulation 7 (MRI) (cut4, tiff, w/o transf)|0.001425|0.036337|0.877673|0.000167| 0.013528|0.985824|
 
 Model | Median MSE | Median NMSE | Median SSIM | Median MSE LR | Median NMSE LR | Median SSIM LR| 
 |---|---|---|---|---|---|---|
 | Simulation 4 (MRI) (cut in 4)|0.000565|0.025679 | 0.939164| 0.000258 | 0.016857| 0.975474| 
 | Simulation 6 (MRI) (cut4, tiff)|0.000582|0.026722|0.940734|.000081| 0.009626|0.994210| 
+| Simulation 7 (MRI) (cut4, tiff, w/o transf)|0.000622|0.027623|0.934779|0.000119| 0.011631|0.988207| 
+
 
 **Feature loss**: 
 Create feature loss: 
@@ -95,4 +107,5 @@ Create feature loss:
 ### Issues: 
 - Creating training data: ideally 6 channel tiff images but had to convert to three channel images --> Several Deep Learning Framework Libraries (.e.g PyTorch's TorchVision), Image Processing libraries (.e.g skimage) and machine learning data augmentation libraries (e.g. Augmenter) internally rely on the PIL to perform image transformations. You can have a situation where in a Semantic Segmentation problem, you have a 3-ch RGB input image, but have a 10-ch mask with each individual channels containing a binary mask of the classes found in the RGB image.If you use PIL to perform any type of transform, e.g. rescale, it truncates a multi-channel image to a 3-channel image.
 - Training data very similar according to MSE, NMSE, SSIM (need to evaluate differently) 
-
+- in depth analysis of pixels
+- report: why not a GAN ? unstable and does not converge quickly
