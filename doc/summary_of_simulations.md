@@ -60,7 +60,7 @@ Input images:
 | Simulation 4 (cut in 4)|  (3, 502, 672)|  (3, 502, 672)| 4 | 10 | 1e-3 | slice(1e-3)|0.710625|0.746289 |
 | Simulation 5 (cut in 4)|  (3, 502, 672)|  (3, 502, 672)| 4 | 10 | 1e-3 | slice(1e-3)|0.7023|0.7366 |
 | Simulation 6 (cut4, tiff)|  (3, 502, 672)|  (3, 502, 672)| 4 | 10 | 1e-3 | slice(1e-3)|0.639402|0.847978 |
-| Simulation 7 (MRI) (cut4, tiff, w/o transf)|  (3, 502, 672)|  (3, 502, 672)| 4 | 10 | 1e-3 | slice(1e-3)|?|? |
+| Simulation 7 (MRI) (cut4, tiff, w/o transf)|  (3, 502, 672)|  (3, 502, 672)| 4 | 10 | 1e-3 | slice(1e-3)|0.689234|0.680575 |
 
 
 
@@ -104,4 +104,5 @@ Create feature loss:
 ### Issues: 
 - Creating training data: ideally 6 channel tiff images but had to convert to three channel images --> Several Deep Learning Framework Libraries (.e.g PyTorch's TorchVision), Image Processing libraries (.e.g skimage) and machine learning data augmentation libraries (e.g. Augmenter) internally rely on the PIL to perform image transformations. You can have a situation where in a Semantic Segmentation problem, you have a 3-ch RGB input image, but have a 10-ch mask with each individual channels containing a binary mask of the classes found in the RGB image.If you use PIL to perform any type of transform, e.g. rescale, it truncates a multi-channel image to a 3-channel image.
 - Training data very similar according to MSE, NMSE, SSIM (need to evaluate differently) 
-
+- in depth analysis of pixels
+- report: why not a GAN ? 
