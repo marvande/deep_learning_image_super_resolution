@@ -46,30 +46,47 @@ snapshots. Middle: low-resolution of the whole slide with 45 snapshot positions
 \section{State of the art}\label{sec:state-of-art}
 \textbf{Survey the related work, giving credit where credit is
   due.} In the literature, several models have been proposed to perform super-resolution on medical images. We will survey them to get an idea what has already been done and from what we can take inspiration. A simple way to re-sample a low-resolution image to high-resolution is to apply interpolation (bicubic, bilinear, nearest neighbour, etc). Nevertheless, those can cause overshooting, clipping and images may be blurred. Thus, more elaborate models are provided, with the assumption that high-resolution images are made available. In ~\cite{zhang2019}, Zhang et al. suggest a method for fast single image super-resolution (FMISR) with three hidden layers in addition to a sub-pixel convolution layer and a mini-array. This model, they argue, improves the speed and quality of image reconstruction. Nonetheless, as it is used and trained on MRI and CT scans of the retinal macula, brain and bones, and thus are more a broad overview of those structures without cellular composition, it is not ideal for our melanoma stroma scans, which are more cell focused (\textbf{other way to formulate ?}). In ~\cite{nature2019}, Hongda Wang et al. present a deep-learning-enabled super-resolution model across different fluorescence microscopy modalities. Their method is based on training a generative adversarial network (GAN) to create super resolution total internal reflection fluorescence (TIRF) microscopy images of sub-cellular structures from diffraction-limited input images. Nevertheless, we have chosen not to follow a GAN structure because of their tendency to be unstable and their lengthy convergence time. \textbf{complete?}
-  
+
  \begin{figure}[tbp]
   \centering
-  \includegraphics[width=\columnwidth]{doc/report/images/scan1.jpg}
-  \caption{Example of a low resolution medical image with six high-resolution
-snapshots. Middle: low-resolution of the whole slide with 45 snapshot positions
-(small boxes). Left and Right: example of six high-resolution snapshots.}
+  \includegraphics[width=\columnwidth]{doc/report/images/phenotypes.png}
+  \caption{Example of phenotype images provided by inform.}
   \vspace{-3mm}
   \label{fig:phenotypes}
 \end{figure}
 
-
 \section{Models and Methods}\label{sec:models-methods}
-\subsection{The data}\label{subsec:data}
-As previously mentioned, our data consists of 5-channel low-resolution raw .im3 files and 35-channel high-resolution snapshots. In Additionally, inForm outputs for each high-resolution patch its location, 3-channel phenotype images (see Figure~\ref{fig:phenotypes}), cell labelling data, and cell and tissue segmentation images. The phenotypes data included are: 
+\subsection{Data pre-processing}\label{subsec:data_pre_proc}
+\subsubsection{HR data}\label{subsubsec:HR_data}
+As previously mentioned in ~\ref{sec:introduction}, our data consists of 5-channel low-resolution raw .im3 files and approximately 30-35 35-channel high-resolution snapshots per low-resolution scan. In Additionally, inForm outputs for each high-resolution patch its location, 3-channel phenotype images (see Figure~\ref{fig:phenotypes}), cell labelling data, and cell and tissue segmentation images. The phenotypes data included are: 
 \begin{itemize}
     \item DAPI: blue-fluorescent DNA stain used for cell-center staining in fluorescence microscopy
     \item CD4: glycoprotein found on the surface of immune cells such as T lymphocytes. As previously stated in ~\cite{Carstens2017}~\cite{Bottomley2019}, knowledge of the distribution of immune cells in proximity to cancerous cells can give crucial information about patients survival and influence the choice of therapy.
     \item CD3: protein complex and T lymphocyte cell co-receptor.
     \item CD8: transmembrane glycoprotein that serves as a co-receptor for the T-cell receptor.
     \item FOXP3: protein involved in regulating the development and function of regulatory T lymphocyte cells.
-    \item CK: cytokeratin, intermediate filaments forming the proteins that provide mechanical support for the cells. CKs are important markers for tumour cells. Primarily, metastases of a given carcinoma share a common cytokeratin pattern, which distinguishes them from other types of cancer, thus making it possible to distinguish between different tumors.
+    \item CK: cytokeratin, intermediate filaments forming the proteins that provide mechanical support for the cells. CKs are important markers for tumour cells. Primarily, metastases of a given carcinoma share a common cytokeratin pattern, which distinguishes them from other types of cancer, thus making it possible to distinguish between different tumours.
 \end{itemize} 
 
+In the first stages of the project, we started with a simple approach in order to add more complexity downstream. Our first objective was to find a model capable of predicting high-resolution images from low-resolution inputs assuming high-resolution data were supplied. Consequently, we were only interested in the high-resolution phenotype files. As a result, two types of datasets were created from the high-resolution images. The first dataset, that was used as inputs in the primary stage of the development of the model, was comprised of 3 channel images of size (3, 1004, 1344). Each image was created by transforming the phenotype files from .tif to .jpg. This was due to the model accepting only that type of images at that state. The second dataset, was created by creating .tif files of size (3, 1004, 1344) where each channel was a converted grayscale phenotype image (see Figure~\ref{fig:process_data} for an illustration of the process and Figure~\ref{fig:example_data} for an example). Thus for a certain location and patient, two files were created. The first one comprising phenotypes DAPI, CD4 and CK and the second one CD3, CD8 and FOXP3 (\textbf{choice is random, should be different ?}.
+
+\begin{figure}[tbp]
+  \centering
+  \includegraphics[width=\columnwidth]{doc/report/images/process_data.jpg}
+  \caption{Process of creating the input data to the model. 3 phenotypes files are converted to grayscale and assembled into a new 3 channel file.}
+  \vspace{-3mm}
+  \label{fig:process_data}
+\end{figure}
+
+\begin{figure}[tbp]
+  \centering
+  \includegraphics[width=\columnwidth]{doc/report/images/example_data_2.png}
+  \caption{Example of (3, 1004, 1334) image created as HR input for the model. Channels are colorized.}
+  \vspace{-3mm}
+  \label{fig:example_data}
+\end{figure}
+
+\subsubsection{LR data}\label{subsubsection:LR_data} Though the corresponding low-resolution snapshots could be recovered from the whole LR scan and the location of HR patches, because we first wanted to create a simple approach to this problem, we created the LR data directly from the HR images.  
 
 \subsection{Method}
 \textbf{ Describe your idea and how it was implemented to solve
