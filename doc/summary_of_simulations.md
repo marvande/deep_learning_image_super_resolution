@@ -105,4 +105,4 @@ Create feature loss:
 - Creating training data: ideally 6 channel tiff images but had to convert to three channel images --> Several Deep Learning Framework Libraries (.e.g PyTorch's TorchVision), Image Processing libraries (.e.g skimage) and machine learning data augmentation libraries (e.g. Augmenter) internally rely on the PIL to perform image transformations. You can have a situation where in a Semantic Segmentation problem, you have a 3-ch RGB input image, but have a 10-ch mask with each individual channels containing a binary mask of the classes found in the RGB image.If you use PIL to perform any type of transform, e.g. rescale, it truncates a multi-channel image to a 3-channel image.
 - Training data very similar according to MSE, NMSE, SSIM (need to evaluate differently) 
 - in depth analysis of pixels
-- report: why not a GAN ? 
+- report: why not a GAN ? unstable and does not converge quickly
