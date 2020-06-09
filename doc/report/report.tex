@@ -1,4 +1,4 @@
-\documentclass[10pt,conference,compsocconf]{IEEEtran}
+\documentclass[11pt,conference,compsocconf]{IEEEtran}
 
 \usepackage{hyperref}
 \usepackage{graphicx}	% For figure environment
@@ -30,9 +30,7 @@ the paper. The four points that should be covered:
 
 \section{Introduction}\label{sec:introduction}
 
-In \textit{"Spatial computation of intratumoral T cells correlates with survival of patients with pancreatic cancer"}~\cite{Carstens2017}, Carstens, J. L. et al. correlate spatial placement of intra-tumoral T cells with survival of patients with pancreatic cancer. For this nevertheless, one needs a good evaluation of composition and distribution of elements active in fibrous and connective tissue growth and immune cells in tumor stroma. In this light, having at our disposition melanoma scans provided by the CHUV (see Figure~\ref{fig:melanoma-scan}), our project aims perform super resolution on them under the assumption that high-resolution snapshots of the tissue and its corresponding phenotypes are available in order to estimate cell populations. As mentioned above, our data is comprised of melanoma scans and their inForm output data provided by the CHUV. Due to time and technology constraints, whole slide images created by the scanner are of low-resolution. This leads to loss of a lot of important details. Therefore, the resolution is improved for certain predefined locations, by zooming in manually. These high-resolution snapshots come with additional information, namely their phenotypes provided by inForm, an analysis software. Nevertheless, as the number of high-resolution scans are limited, considering only them might lead to loss of important information regarding the whole slide. Thus, the goal of this project is to develop a model that is able to produce high resolution images of the whole melanoma scan by taking into
-account the high resolution snapshots and the underlying image structure.
-
+In \textit{"Spatial computation of intratumoral T cells correlates with survival of patients with pancreatic cancer"}~\cite{Carstens2017}, Carstens, J. L. et al., as indicated in the paper's title, correlate spatial placement of intra-tumoral T cells, especially the distribution of cytotoxic T cells near cancerous cells, with the survival of patients with pancreatic cancer. Carstens, J. L. et al. state that \textit{a comprehensive evaluation of the composition and distribution of desmoplastic elements may improve our understanding of how specific stromal composition could impact T-cell activity, with potential impact on the optimisation of immune-modulatory therapies}~\cite{Carstens2017}. This idea is similarly explored for skin cancer in \cite{Bottomley2019}, where Bottomley et al. discuss the complex role of the immune system in melanoma stroma and how a deeper understanding of its cellular composition can be channelled into novel therapies. As mentioned above, for this nevertheless, one needs a good evaluation of the composition and distribution of elements active in fibrous and connective tissue growth and immune cells in tumour stroma. But, due to different constraints, medical stroma images cannot always provide this information in a straight forward manner. In our case, we have at our disposition melanoma scans provided by the CHUV. Due to time and technology constraints, the whole slide images created by the scanner are of low-resolution, causing an important loss of details. Therefore, for certain manually preset locations, the resolution is improved by zooming in (see Figure~\ref{fig:melanoma-scan}). These high-resolution snapshots come with additional information, namely tissue and cell segmentation and phenotypes unmixing provided by inForm, a semi-supervised advanced cell analysis software for accurately quantifying bio-markers in tissue sections. Nevertheless, as the number of high-resolution scans are limited, considering only those might lead to loss of important information regarding the whole slide. The goal of this project is to develop a model that is able to produce high resolution images of low-resolution snapshots by taking into account the high resolution snapshots and the underlying image structure, in the idea of, further down the line, producing a high-resolution image of the whole melanoma scan. 
 
  \begin{figure}[tbp]
   \centering
@@ -47,11 +45,33 @@ snapshots. Middle: low-resolution of the whole slide with 45 snapshot positions
 
 \section{State of the art}\label{sec:state-of-art}
 \textbf{Survey the related work, giving credit where credit is
-  due.} In the literature, several models have been proposed to perform super-resolution on medical images. We will survey them to get an idea what has already been done, from what we will take inspiration and what we decided to change. In ~\cite{zhang2019}, Zhang et al. propose a fast medical image super-resolution (FMISR) method with three hidden layers in addition to a sub-pixel convolution layer and a mini-network. This  model, they stipulate, improves image reconstruction speed and quality. Nevetheless, as it is used and trained on retinal macula, brain and bone images, it is not ideal for our stroma images, which are more cell oriented (\textbf{other way to formulate ?}). In ~\cite{nature2019}, Hongda Wang et al. present a deep-learning-enabled super-resolution across different fluorescence microscopy modalities. Their model is based on training a generative adversarial network (GAN) to create super resolution total internal reflection fluorescence (TIRF) microscopy images of sub-cellular structures from diffraction-limited input images. Nevertheless, we choose not to follow a GAN structure because of \textbf{TO COMPLETE}. In ~\cite{Janowczyk2018}, Janowczyk et al. introduce a resolution adaptive deep hierarchical (RADHicaL) learning scheme applied to nuclear segmentation of digital pathology images. In their model, "deep learning networks at lower resolutions are leveraged to determine if higher levels of magnification, and thus computation, are necessary to provide precise results"~\cite{Janowczyk2018}. While the images that are the focus of their report are much more similar to ours than the other state of the art methods, \textbf{TO complete why we don't want that}. 
+  due.} In the literature, several models have been proposed to perform super-resolution on medical images. We will survey them to get an idea what has already been done and from what we can take inspiration. A simple way to re-sample a low-resolution image to high-resolution is to apply interpolation (bicubic, bilinear, nearest neighbour, etc). Nevertheless, those can cause overshooting, clipping and images may be blurred. Thus, more elaborate models are provided, with the assumption that high-resolution images are made available. In ~\cite{zhang2019}, Zhang et al. suggest a method for fast single image super-resolution (FMISR) with three hidden layers in addition to a sub-pixel convolution layer and a mini-array. This model, they argue, improves the speed and quality of image reconstruction. Nonetheless, as it is used and trained on MRI and CT scans of the retinal macula, brain and bones, and thus are more a broad overview of those structures without cellular composition, it is not ideal for our melanoma stroma scans, which are more cell focused (\textbf{other way to formulate ?}). In ~\cite{nature2019}, Hongda Wang et al. present a deep-learning-enabled super-resolution model across different fluorescence microscopy modalities. Their method is based on training a generative adversarial network (GAN) to create super resolution total internal reflection fluorescence (TIRF) microscopy images of sub-cellular structures from diffraction-limited input images. Nevertheless, we have chosen not to follow a GAN structure because of their tendency to be unstable and their lengthy convergence time. \textbf{complete?}
   
-  
+ \begin{figure}[tbp]
+  \centering
+  \includegraphics[width=\columnwidth]{doc/report/images/scan1.jpg}
+  \caption{Example of a low resolution medical image with six high-resolution
+snapshots. Middle: low-resolution of the whole slide with 45 snapshot positions
+(small boxes). Left and Right: example of six high-resolution snapshots.}
+  \vspace{-3mm}
+  \label{fig:phenotypes}
+\end{figure}
+
 
 \section{Models and Methods}\label{sec:models-methods}
+\subsection{The data}\label{subsec:data}
+As previously mentioned, our data consists of 5-channel low-resolution raw .im3 files and 35-channel high-resolution snapshots. In Additionally, inForm outputs for each high-resolution patch its location, 3-channel phenotype images (see Figure~\ref{fig:phenotypes}), cell labelling data, and cell and tissue segmentation images. The phenotypes data included are: 
+\begin{itemize}
+    \item DAPI: blue-fluorescent DNA stain used for cell-center staining in fluorescence microscopy
+    \item CD4: glycoprotein found on the surface of immune cells such as T lymphocytes. As previously stated in ~\cite{Carstens2017}~\cite{Bottomley2019}, knowledge of the distribution of immune cells in proximity to cancerous cells can give crucial information about patients survival and influence the choice of therapy.
+    \item CD3: protein complex and T lymphocyte cell co-receptor.
+    \item CD8: transmembrane glycoprotein that serves as a co-receptor for the T-cell receptor.
+    \item FOXP3: protein involved in regulating the development and function of regulatory T lymphocyte cells.
+    \item CK: cytokeratin, intermediate filaments forming the proteins that provide mechanical support for the cells. CKs are important markers for tumour cells. Primarily, metastases of a given carcinoma share a common cytokeratin pattern, which distinguishes them from other types of cancer, thus making it possible to distinguish between different tumors.
+\end{itemize} 
+
+
+\subsection{Method}
 \textbf{ Describe your idea and how it was implemented to solve
   the problem.}
 The models and methods
