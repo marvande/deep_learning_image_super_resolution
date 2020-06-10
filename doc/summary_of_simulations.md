@@ -12,6 +12,8 @@ Input images:
 | Simulation 5 (MRI) (cut in 4)| (3, 250, 334)| (3, 502, 672)  |  (3, 502, 672)  |  5552 | 616 |Image stats|
 | Simulation 6 (MRI) (cut4, tiff)| (3, 250, 334)| (3, 502, 672)  |  (3, 502, 672)  |  1851 | 205 |Image stats|
 | Simulation 7 (MRI) (cut4, tiff, w/o transf)| (3, 250, 334)| (3, 502, 672)  |  (3, 502, 672)  |  1851 | 205 |Image stats|
+| Simulation 8 (MRI) (cut4, tiff, w/o transf)| (3, 125, 167)| (3, 502, 672)  |  (3, 502, 672)  |  1851 | 205 |Image stats|
+
 
 
 ### Training: 
@@ -31,6 +33,8 @@ Input images:
 | Simulation 5 (cut in 4)|  (3, 250, 334)|  (3, 250, 334)|15 | 10 | 1e-3 | slice(0.01)| 0.6043 | 0.5753
 | Simulation 6 (cut4, tiff)|  (3, 250, 334)|  (3, 250, 334)|15 | 10 | 1e-3 | slice(0.01)| 0.449800 |0.501512
 | Simulation  7 (MRI) (cut4, tiff, w/o transf)|  (3, 250, 334)|  (3, 250, 334)|15 | 10 | 1e-3 | slice(0.01)| 0.351183 |0.346088
+| Simulation  8 (MRI) (cut4, tiff, w/o transf)|  (3, 250, 334)|  (3, 250, 334)|15 | 10 | 1e-3 | slice(0.01)| 0.619969 |0.604122
+
 
 
 
@@ -45,6 +49,8 @@ Input images:
 | Simulation 5 (cut in 4)|  (3, 250, 334)|  (3, 250, 334)|15 | 10 | 1e-3 | slice(1e-5, 1e-3)| 0.5854 |0.5634 |
 | Simulation 6 (cut4, tiff)|  (3, 250, 334)|  (3, 250, 334)|15 | 10 | 1e-3 | slice(1e-5, 1e-3)| 0.425064 |0.509859 |
 | Simulation  7 (MRI) (cut4, tiff, w/o transf)|  (3, 250, 334)|  (3, 250, 334)|15 | 10 | 1e-3 |slice(1e-5, 1e-3)| 0.341797 |0.341707 
+| Simulation  8 (MRI) (cut4, tiff, w/o transf)|  (3, 250, 334)|  (3, 250, 334)|15 | 10 | 1e-3 |slice(1e-5, 1e-3)| 0.580875 |0.576627 
+
 
 
 #### Phase 2:
@@ -61,6 +67,8 @@ Input images:
 | Simulation 5 (cut in 4)|  (3, 502, 672)|  (3, 502, 672)| 4 | 10 | 1e-3 | slice(1e-3)|0.7023|0.7366 |
 | Simulation 6 (cut4, tiff)|  (3, 502, 672)|  (3, 502, 672)| 4 | 10 | 1e-3 | slice(1e-3)|0.639402|0.847978 |
 | Simulation 7 (MRI) (cut4, tiff, w/o transf)|  (3, 502, 672)|  (3, 502, 672)| 4 | 10 | 1e-3 | slice(1e-3)|0.689234|0.680575 |
+| Simulation 8 (MRI) (cut4, tiff, w/o transf)|  (3, 502, 672)|  (3, 502, 672)| 4 | 10 | 1e-3 | slice(1e-3)|0.839572|0.830458 |
+
 
 
 
@@ -75,6 +83,8 @@ Input images:
 | Simulation 5 (cut in 4)|  (3, 502, 672)|  (3, 502, 672)| 4 | 10 | 1e-3 | slice(1e-6, 1e-4)| 0.68534 |	0.71327|
 | Simulation 6 (cut4, tiff)|  (3, 502, 672)|  (3, 502, 672)| 4 | 10 | 1e-3 | slice(1e-6, 1e-4)| 0.614185 |	0.792894|
 | Simulation 7 (MRI) (cut4, tiff, w/o transf)|  (3, 502, 672)|  (3, 502, 672)| 4 | 10 | 1e-3 | slice(1e-6, 1e-4)| 0.676916 |	0.665724|
+| Simulation 8 (MRI) (cut4, tiff, w/o transf)|  (3, 502, 672)|  (3, 502, 672)| 4 | 10 | 1e-3 | slice(1e-6, 1e-4)| 0.830131 |	0.817874|
+
 
 
 
