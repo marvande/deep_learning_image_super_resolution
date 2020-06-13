@@ -13,6 +13,8 @@ Input images:
 | Simulation 6 (MRI) (cut4, tiff)| (3, 250, 334)| (3, 502, 672)  |  (3, 502, 672)  |  1851 | 205 |Image stats|
 | Simulation 7 (MRI) (cut4, tiff, w/o transf)| (3, 250, 334)| (3, 502, 672)  |  (3, 502, 672)  |  1851 | 205 |Image stats|
 | Simulation 8 (MRI) (cut4, tiff, w/o transf)| (3, 125, 167)| (3, 502, 672)  |  (3, 502, 672)  |  1851 | 205 |Image stats|
+| Simulation 9 (MRI) (cut4, tiff, with transf)| (3, 125, 167)| (3, 502, 672)  |  (3, 502, 672)  |  1851 | 205 |Imagenet stats|
+
 
 
 
@@ -34,6 +36,8 @@ Input images:
 | Simulation 6 (cut4, tiff)|  (3, 250, 334)|  (3, 250, 334)|15 | 10 | 1e-3 | slice(0.01)| 0.449800 |0.501512
 | Simulation  7 (MRI) (cut4, tiff, w/o transf)|  (3, 250, 334)|  (3, 250, 334)|15 | 10 | 1e-3 | slice(0.01)| 0.351183 |0.346088
 | Simulation  8 (MRI) (cut4, tiff, w/o transf)|  (3, 250, 334)|  (3, 250, 334)|15 | 10 | 1e-3 | slice(0.01)| 0.619969 |0.604122
+| Simulation  9 (MRI) (cut4, tiff, with transf)|  (3, 250, 334)|  (3, 250, 334)|15 | 10 | 1e-3 | slice(0.01)| 0.591649 |0.525496
+
 
 
 
@@ -49,7 +53,9 @@ Input images:
 | Simulation 5 (cut in 4)|  (3, 250, 334)|  (3, 250, 334)|15 | 10 | 1e-3 | slice(1e-5, 1e-3)| 0.5854 |0.5634 |
 | Simulation 6 (cut4, tiff)|  (3, 250, 334)|  (3, 250, 334)|15 | 10 | 1e-3 | slice(1e-5, 1e-3)| 0.425064 |0.509859 |
 | Simulation  7 (MRI) (cut4, tiff, w/o transf)|  (3, 250, 334)|  (3, 250, 334)|15 | 10 | 1e-3 |slice(1e-5, 1e-3)| 0.341797 |0.341707 
-| Simulation  8 (MRI) (cut4, tiff, w/o transf)|  (3, 250, 334)|  (3, 250, 334)|15 | 10 | 1e-3 |slice(1e-5, 1e-3)| 0.580875 |0.576627 
+| Simulation  8 (MRI) (cut4, tiff, w/o transf)|  (3, 250, 334)|  (3, 250, 334)|15 | 10 | 1e-3 |slice(1e-5, 1e-3)| 0.580875 |0.576627
+| Simulation  9 (MRI) (cut4, tiff, with transf)|  (3, 250, 334)|  (3, 250, 334)|15 | 10 | 1e-3 |slice(1e-5, 1e-3)| 0.541038 |0.494553 
+
 
 
 
@@ -68,6 +74,8 @@ Input images:
 | Simulation 6 (cut4, tiff)|  (3, 502, 672)|  (3, 502, 672)| 4 | 10 | 1e-3 | slice(1e-3)|0.639402|0.847978 |
 | Simulation 7 (MRI) (cut4, tiff, w/o transf)|  (3, 502, 672)|  (3, 502, 672)| 4 | 10 | 1e-3 | slice(1e-3)|0.689234|0.680575 |
 | Simulation 8 (MRI) (cut4, tiff, w/o transf)|  (3, 502, 672)|  (3, 502, 672)| 4 | 10 | 1e-3 | slice(1e-3)|0.839572|0.830458 |
+| Simulation 9 (MRI) (cut4, tiff, with transf)|  (3, 502, 672)|  (3, 502, 672)| 4 | 10 | 1e-3 | slice(1e-3)|0.713906|0.776364 |
+
 
 
 
@@ -84,6 +92,7 @@ Input images:
 | Simulation 6 (cut4, tiff)|  (3, 502, 672)|  (3, 502, 672)| 4 | 10 | 1e-3 | slice(1e-6, 1e-4)| 0.614185 |	0.792894|
 | Simulation 7 (MRI) (cut4, tiff, w/o transf)|  (3, 502, 672)|  (3, 502, 672)| 4 | 10 | 1e-3 | slice(1e-6, 1e-4)| 0.676916 |	0.665724|
 | Simulation 8 (MRI) (cut4, tiff, w/o transf)|  (3, 502, 672)|  (3, 502, 672)| 4 | 10 | 1e-3 | slice(1e-6, 1e-4)| 0.830131 |	0.817874|
+| Simulation 9 (MRI) (cut4, tiff, with transf)|  (3, 502, 672)|  (3, 502, 672)| 4 | 10 | 1e-3 | slice(1e-6, 1e-4)| 0.557891 |	0.520142|
 
 
 
@@ -98,7 +107,7 @@ Model | Median MSE | Median NMSE | Median SSIM | Median MSE LR | Median NMSE LR 
 |---|---|---|---|---|---|---|
 | Simulation 4 (MRI) (cut in 4)|0.000565|0.025679 | 0.939164| 0.000258 | 0.016857| 0.975474| 
 | Simulation 6 (MRI) (cut4, tiff)|0.000582|0.026722|0.940734|.000081| 0.009626|0.994210| 
-| Simulation 7 (MRI) (cut4, tiff, w/o transf)|0.000622|0.027623|0.934779|0.000119| 0.011631|0.988207| 
+| Simulation 7 (MRI) (cut4, tiff, w/o transf)|0.000622|0.027623|0.934779|0.000119| 0.011631|0.988207|
 
 
 **Feature loss**: 
