@@ -9,9 +9,11 @@ import torchvision.transforms as transforms
 from skimage import measure
 from numpy import linalg as LA
 import shutil
+import random
 
 from  add_functions.evaluation_metrics import *
 from  add_functions.plot_fx_model import *
+device = torch.device("cuda:3" if torch.cuda.is_available() else "cpu")
 
 # transformations to use in model if want to avoid overfitting. 
 tfms = ([
@@ -118,6 +120,7 @@ class PyTMinMaxScaler(object):
             scale = 1.0 / (ch.max() - ch.min())
             ch.mul_(scale).sub_(ch.min())
         return tensor
+
 scaler = PyTMinMaxScaler()
 
 #transforms to tensor:
@@ -141,15 +144,41 @@ def file_inf(file_str):
     
     return file_name, patient, location
 
-def eval_test_images_df(learn, path_lr, path_hr, res):
-    MAE, MSE, NMSE, SSIM, FROB, NUC, PSNR = [], [],[], [], [], [], []
-    LR_MAE,LR_MSE, LR_NMSE, LR_SSIM, LR_FROB, LR_NUC, LR_PSNR = [],[], [], [], [], [], []
+def create_pred_int(learn, path_lr, path_hr, save_int, save_pred):
+    # saves predictions and interpolated versions for all images
+    LR_list = ImageList.from_folder(path_lr).items
+    HR_list = ImageList.from_folder(path_hr).items
+    
+    for i in range(len(HR_list)):
+        file_name, patient, location = file_inf(str(LR_list[i]))
+
+        #resize LR to size of HR
+        img_lr = PIL.Image.open(LR_list[i]).resize(
+            (672, 502), resample=PIL.Image.BICUBIC).convert('RGB')
+        LR_tens = scaler(trans1(img_lr))
+
+        #HR img:
+        HR_tens = open_image(HR_list[i]).data
+        
+        # Prediction of model for ups LR:
+        p_lr, img_pred_lr, b_lr = learn.predict(Image(LR_tens))
+        
+        # Assert reconstructed HR has same shape as ground truth HR:
+        assert (list(img_pred_lr.shape) == list(HR_tens.shape))  
+        
+        # save created images
+        img_lr.save(save_int/file_name)
+        trans(scaler(img_pred_lr)).save(save_pred/file_name)
+            
+def eval_test_images_df(learn, path_lr, path_hr, res, indices):
+    MAE, MSE, NMSE, SSIM, FROB, PSNR = [], [],[], [], [], []
+    LR_MAE,LR_MSE, LR_NMSE, LR_SSIM, LR_FROB, LR_PSNR = [],[], [], [], [], [], 
     file_names, locations, patients, phenotypes_list = [], [], [], []
 
     LR_list = ImageList.from_folder(path_lr).items
     HR_list = ImageList.from_folder(path_hr).items
-
-    for i in range(len(LR_list[0:20])):
+    
+    for i in indices:
         file_name, patient, location = file_inf(str(LR_list[i]))
         file_names.append(file_name)
         patients.append(patient)
@@ -165,13 +194,7 @@ def eval_test_images_df(learn, path_lr, path_hr, res):
         
         # Prediction of model for ups LR:
         p_lr, img_pred_lr, b_lr = learn.predict(Image(LR_tens))
-        trans(img_pred_lr).save('data/predictions/'+file_name)
         
-        if res == 'MR':
-            img_lr.save('data/interpolatedHR/MR/'+file_name)
-        else:
-            img_lr.save('data/interpolatedHR/LR/'+file_name) 
-            
         plot_triple(LR_tens.numpy()[1, :, :],
                     HR_tens.numpy()[1, :, :],img_pred_lr.numpy()[1, :, :], 
                         'Int. '+res, 'gt HR', 'Pred '+res)
@@ -183,7 +206,6 @@ def eval_test_images_df(learn, path_lr, path_hr, res):
                                          scaler(img_pred_lr).numpy()))
         SSIM.append(ssim_mult_chann(HR_tens.numpy(), scaler(img_pred_lr).numpy()))
         FROB.append(frob(HR_tens.numpy(), scaler(img_pred_lr).numpy()))
-        NUC.append(nuc(HR_tens.numpy(), scaler(img_pred_lr).numpy()))
         PSNR.append(multi_chann_psnr(HR_tens.numpy(), scaler(img_pred_lr).numpy()))
         
         LR_MAE.append(mse_mult_chann(LR_tens.numpy(), scaler(img_pred_lr).numpy()))
@@ -192,7 +214,6 @@ def eval_test_images_df(learn, path_lr, path_hr, res):
             measure.compare_nrmse(LR_tens.numpy(), scaler(img_pred_lr).numpy()))
         LR_SSIM.append(ssim_mult_chann(LR_tens.numpy(), scaler(img_pred_lr).numpy()))
         LR_FROB.append(frob(LR_tens.numpy(), scaler(img_pred_lr).numpy()))
-        LR_NUC.append(nuc(LR_tens.numpy(), scaler(img_pred_lr).numpy()))
         LR_PSNR.append(multi_chann_psnr(LR_tens.numpy(), scaler(img_pred_lr).numpy()))
 
     return pd.DataFrame(
@@ -205,13 +226,90 @@ def eval_test_images_df(learn, path_lr, path_hr, res):
             'NMSE': NMSE,
             'SSIM': SSIM,
             'FROB': FROB,
-            'NUC': NUC,
             'PSNR':PSNR,
             res + '_MAE': LR_MAE,
             res + '_MSE': LR_MSE,
             res + '_NMSE': LR_NMSE,
             res + '_SSIM': LR_SSIM,
             res + '_FROB': LR_FROB,
-            res + '_NUC': LR_NUC,
             res + '_PSNR': LR_PSNR,
         })
+
+def gram_matrix(x):
+    """
+    Gram matrix of a set of vectors in an inner 
+    product space is the Hermitian matrix of inner products
+    """
+    n,c,h,w = x.size()
+    x = x.view(n, c, -1)
+    return (x @ x.transpose(1,2))/(c*h*w)
+
+def losses_df(data_set, vgg_m, blocks):
+
+    feat_loss_testing = FeatureLoss_testing(vgg_m, blocks[2:5], [5,15,2])
+
+    pixel_loss, gram0_loss, gram1_loss, gram2_loss = [], [], [], [],
+    sum_loss, feat0_loss, feat1_loss, feat2_loss = [], [], [], []
+    for i in range(20):
+
+        #Feature loss between intMR and HR:
+        x_mr = data_set.one_batch(ds_type=DatasetType.Valid)[0][i].numpy()
+        arr_mr = np.ndarray((1, 3, 502, 672))
+        arr_mr[0] = x_mr
+        x_mr = torch.from_numpy(arr_mr).float().to(device)
+
+        y_mr = data_set.one_batch(ds_type=DatasetType.Valid)[1][i].numpy()
+        arr_mr = np.ndarray((1, 3, 502, 672))
+        arr_mr[0] = y_mr
+        y_mr = torch.from_numpy(arr_mr).float().to(device)
+
+        over_loss, losses = feat_loss_testing.forward(x_mr, y_mr)
+        sum_loss.append(over_loss.item())
+        pixel_loss.append(losses['pixel'].item())
+        feat0_loss.append(losses['feat_0'].item())
+        feat1_loss.append(losses['feat_1'].item())
+        feat2_loss.append(losses['feat_2'].item())
+        gram0_loss.append(losses['gram_0'].item())
+        gram1_loss.append(losses['gram_1'].item())
+        gram2_loss.append(losses['gram_2'].item())
+
+    return pd.DataFrame(
+            data={
+                'overall_loss':sum_loss,
+                'pixel_loss': pixel_loss,
+                'feat0_loss': feat0_loss,
+                'feat1_loss': feat1_loss,
+                'feat2_loss': feat2_loss,
+                'gram0_loss': gram0_loss,
+                'gram1_loss': gram1_loss,
+                'gram2_loss': gram2_loss
+            })
+
+class FeatureLoss_testing(nn.Module):
+    def __init__(self, m_feat, layer_ids, layer_wgts):
+        super().__init__()
+        self.m_feat = m_feat
+        self.loss_features = [self.m_feat[i] for i in layer_ids]
+        self.hooks = hook_outputs(self.loss_features, detach=False)
+        self.wgts = layer_wgts
+        self.metric_names = ['pixel',] + [f'feat_{i}' for i in range(len(layer_ids))
+              ] + [f'gram_{i}' for i in range(len(layer_ids))]
+
+    def make_features(self, x, clone=False):
+        self.m_feat(x)
+        return [(o.clone() if clone else o) for o in self.hooks.stored]
+    
+    def forward(self, input, target):
+        out_feat = self.make_features(target, clone=True)
+        in_feat = self.make_features(input)
+        self.feat_losses = [base_loss(input,target)]
+        #feat losses
+        self.feat_losses += [base_loss(f_in, f_out)*w
+                             for f_in, f_out, w in zip(in_feat, out_feat, self.wgts)]
+        #gram: 
+        self.feat_losses += [base_loss(gram_matrix(f_in), gram_matrix(f_out))*w**2 * 5e3
+                             for f_in, f_out, w in zip(in_feat, out_feat, self.wgts)]
+        self.metrics = dict(zip(self.metric_names, self.feat_losses))
+        return sum(self.feat_losses),self.metrics 
+    
+    def __del__(self): self.hooks.remove()

@@ -8,7 +8,7 @@ __pycache__/
 
 #Word
 #*.docx
-
+docdoc//
 # Distribution / packaging
 .Python
 build/
