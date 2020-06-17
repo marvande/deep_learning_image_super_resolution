@@ -13,7 +13,7 @@ Input images:
 | Simulation 6 (MRI) (cut4, tiff)| (3, 250, 334)| (3, 502, 672)  |  (3, 502, 672)  |  1851 | 205 |Image stats|
 | Simulation 7 (MRI) (cut4, tiff, w/o transf)| (3, 250, 334)| (3, 502, 672)  |  (3, 502, 672)  |  1851 | 205 |Image stats|
 | Simulation 8 (MRI) (cut4, tiff, w/o transf)| (3, 125, 167)| (3, 502, 672)  |  (3, 502, 672)  |  1851 | 205 |Image stats|
-| Simulation 9 (MRI) (cut4, tiff, with transf)| (3, 125, 167)| (3, 502, 672)  |  (3, 502, 672)  |  1851 | 205 |Imagenet stats|
+| Simulation 9 (MRI) (cut4, tiff, with transf)| (3, 125, 167)| (3, 250, 334)  |  (3, 502, 672)  |  1851 | 205 |Imagenet stats|
 
 
 
